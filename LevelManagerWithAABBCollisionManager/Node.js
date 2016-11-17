@@ -8,10 +8,8 @@ function node(x,y,w,h)
 	this.originY = y+(h/2);
 	this.id = -1;
 	this.color = rgb(135,206,250,0);
-	this.arcList = [];
-
 	//connected nodes
-	this.arrayOfConnectedNodes = [];
+	this.arrayOfArcs = [];
 }
 
 node.prototype.draw = function()
