@@ -13,13 +13,10 @@ function SceneMenu()
 
 SceneMenu.prototype.Update = function()
 {
-	console.log("Menu");
-	
-	
+
 	if(this.buttonGame.intersects(new Rect(this.cursorX,this.cursorY,2,2)))
     {
     	isStart = true;
-    	console.log("AHHHHH")
     }
 }
 SceneMenu.prototype.draw = function()
