@@ -171,13 +171,9 @@ Grid.prototype.aStar = function(start,end)
 	var pathArray = [];
 	var bool = false;
 	var nodesToTest = this.getOneDArray();
-	var checkedNodes = [];
 	pathArray.push(start);
-	var heuristicValue = 0;
 	var currentNode = start;
 	var nextNode;
-	console.log(nodesToTest.length)
-	console.log(currentNode);
 	while(bool === false)
 	{
 		
@@ -190,27 +186,19 @@ Grid.prototype.aStar = function(start,end)
 					{
 						var testNode = this.getNodeById(currentNode.arrayOfArcs[i].connectedNodeId);
 						 var d = Math.sqrt((testNode.x-end.x)*(testNode.x-end.x) + (testNode.y-end.y)*(testNode.y-end.y)) +currentNode.arrayOfArcs[i].weight;
-						 //console.log(currentNode.arrayOfArcs[i].connectedNodeId)
 						 if(d < distance)
 						 {
 						 	distance = d 
 						 	nextNode = this.getNodeById(currentNode.arrayOfArcs[i].connectedNodeId);
-						 	console.log("node ",nextNode.id)
-						 	console.log("distance ",distance)
 						 }
 						 nodesToTest.splice(currentNode.arrayOfArcs[i].connectedNodeId,1);
 					}
 					
 				}
 				pathArray.push(nextNode);
-				//console.log("next",currentNode.id)
-				console.log("next node ",nextNode)
 				currentNode = nextNode;
 				nodesToTest.splice(currentNode.id,1);
-			
-			
-			//
-			//pathArray.push(currentNode);
+
 			if(nodesToTest.length === 0)
 			{
 				bool = true;
@@ -220,7 +208,7 @@ Grid.prototype.aStar = function(start,end)
 				bool = true;
 			}
 	}
-	console.log(pathArray);
+	//console.log(pathArray);
 }
 //
 Grid.prototype.containsNode = function(a, obj) 
