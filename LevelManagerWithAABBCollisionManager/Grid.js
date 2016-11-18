@@ -7,6 +7,7 @@ function Grid(sceneWidth,sceneHeight,rowAmount,collumnAmmount)
 	this.tdArray;
 	this.createGrid();
 	this.setNearestNodes();
+	this.aStar(this.getNodeById(0),this.getNodeById(62));
 }
 
 Grid.prototype.update = function()
@@ -76,20 +77,18 @@ Grid.prototype.setNearestNodes = function()
 
 		
 
-			this.tdArray[i][j].arrayOfArcs.push(new arc(60,topLeft));
+			this.tdArray[i][j].arrayOfArcs.push(new arc(70,topLeft));
 			this.tdArray[i][j].arrayOfArcs.push(new arc(50,top));
-			this.tdArray[i][j].arrayOfArcs.push(new arc(60,topRight));
+			this.tdArray[i][j].arrayOfArcs.push(new arc(70,topRight));
 			this.tdArray[i][j].arrayOfArcs.push(new arc(50,right));
-			this.tdArray[i][j].arrayOfArcs.push(new arc(60,botRight));
+			this.tdArray[i][j].arrayOfArcs.push(new arc(70,botRight));
 			this.tdArray[i][j].arrayOfArcs.push(new arc(50,bot));
-			this.tdArray[i][j].arrayOfArcs.push(new arc(60,botLeft));
+			this.tdArray[i][j].arrayOfArcs.push(new arc(70,botLeft));
 			this.tdArray[i][j].arrayOfArcs.push(new arc(50,left));
 
 
 		}
 	}
-console.log(this.tdArray)
-	
 }
 
 Grid.prototype.createGrid = function(coll,row)
@@ -140,6 +139,18 @@ Grid.prototype.draw = function()
 	}
 }
 
+Grid.prototype.getOneDArray = function()
+{
+	var array = [];
+	for (var i = 0; i < this.collumnAmmount; i++) 
+		{
+  			for (var j = 0; j < this.rowAmount; j++) 
+			{
+				array.push(this.tdArray[i][j]);
+			}
+		}
+		return array;
+}
 
 Grid.prototype.getNodeById = function(id)
 {
@@ -158,10 +169,67 @@ Grid.prototype.getNodeById = function(id)
 Grid.prototype.aStar = function(start,end)
 {
 	var pathArray = [];
+	var bool = false;
+	var nodesToTest = this.getOneDArray();
+	var checkedNodes = [];
 	pathArray.push(start);
 	var heuristicValue = 0;
-	for (var i = 0; i < start.arrayOfConnectedNodes.length; i++) 
-		{
-			start.arrayOfConnectedNodes[i]
-		}
+	var currentNode = start;
+	var nextNode;
+	console.log(nodesToTest.length)
+	console.log(currentNode);
+	while(bool === false)
+	{
+		
+		var distance = 11111111;
+		
+			for (var i = 0; i < currentNode.arrayOfArcs.length; i++) 
+				{
+
+					if(currentNode.arrayOfArcs[i].connectedNodeId != -1)
+					{
+						var testNode = this.getNodeById(currentNode.arrayOfArcs[i].connectedNodeId);
+						 var d = Math.sqrt((testNode.x-end.x)*(testNode.x-end.x) + (testNode.y-end.y)*(testNode.y-end.y)) +currentNode.arrayOfArcs[i].weight;
+						 //console.log(currentNode.arrayOfArcs[i].connectedNodeId)
+						 if(d < distance)
+						 {
+						 	distance = d 
+						 	nextNode = this.getNodeById(currentNode.arrayOfArcs[i].connectedNodeId);
+						 	console.log("node ",nextNode.id)
+						 	console.log("distance ",distance)
+						 }
+						 nodesToTest.splice(currentNode.arrayOfArcs[i].connectedNodeId,1);
+					}
+					
+				}
+				pathArray.push(nextNode);
+				//console.log("next",currentNode.id)
+				console.log("next node ",nextNode)
+				currentNode = nextNode;
+				nodesToTest.splice(currentNode.id,1);
+			
+			
+			//
+			//pathArray.push(currentNode);
+			if(nodesToTest.length === 0)
+			{
+				bool = true;
+			}
+			if(currentNode.id === end.id)
+			{
+				bool = true;
+			}
+	}
+	console.log(pathArray);
+}
+//
+Grid.prototype.containsNode = function(a, obj) 
+{
+    var i = a.length;
+    while (i--) {
+       if (a[i] === obj) {
+           return true;
+       }
+    }
+    return false;
 }

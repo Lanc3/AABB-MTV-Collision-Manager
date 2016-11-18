@@ -8,6 +8,7 @@ function node(x,y,w,h)
 	this.originY = y+(h/2);
 	this.id = -1;
 	this.color = rgb(135,206,250,0);
+	this.isChecked = false;
 	//connected nodes
 	this.arrayOfArcs = [];
 }
