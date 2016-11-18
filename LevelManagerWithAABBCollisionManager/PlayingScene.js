@@ -34,7 +34,7 @@ PlayingScene.prototype.Update = function()
 				}
 		}
 	}
-	console.log(this.player.isMoving)
+	
 	if(this.player.isMoving)
 	{
 		//this.levelManager.toggle = false;

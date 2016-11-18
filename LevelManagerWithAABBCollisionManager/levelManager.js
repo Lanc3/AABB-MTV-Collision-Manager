@@ -5,6 +5,7 @@ function levelManager()
 	this.arrayOfWalls = [];
 	this.arrayOfWallsOther = [];
 	this.toggle = true;
+	
 }
 
 levelManager.prototype.loadleveldata = function(filename) 
