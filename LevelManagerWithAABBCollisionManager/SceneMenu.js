@@ -4,26 +4,31 @@ function SceneMenu()
 {
 	isStart = false;
 	this.title = "Menu";
-	this.buttonGame = new button("Start",canvas.width/2,300);
-	this.buttonOption = new button("options",canvas.width/2,400)
-	this.buttonExit = new button("Exit",canvas.width/2,500)
-	this.cursorX;
-	this.cursorY;
+	this.buttonGame = new button("Start",canvas.width/2.3,canvas.height/4);
+	this.buttonOption = new button("options",canvas.width/2.3,canvas.height/2)
+	this.buttonExit = new button("Exit",canvas.width/2.3,canvas.height*0.75)
+	var mousePos;
 }
 
 SceneMenu.prototype.Update = function()
 {
+	this.buttonGame.update();
+	this.buttonOption.update();
+	this.buttonExit.update();
 
-	if(this.buttonGame.intersects(new Rect(this.cursorX,this.cursorY,2,2)))
+	if(this.buttonGame.rect.intersects(new Rect(inputController.mouseCanvasPositionX,inputController.mouseCanvasPositionY,4,4)))
     {
-    	isStart = true;
+    	if(inputController.touching)
+    	{
+    		sceneManager.GoToNextScene();
+    	}
     }
 }
 SceneMenu.prototype.draw = function()
 {
-	this.buttonGame.draw(canvas)
-	this.buttonOption.draw(canvas)
-	this.buttonExit.draw(canvas)
+	this.buttonGame.draw();
+	this.buttonOption.draw();
+	this.buttonExit.draw();
 }
 
 

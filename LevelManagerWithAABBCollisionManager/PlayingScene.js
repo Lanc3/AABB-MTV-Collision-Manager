@@ -1,7 +1,5 @@
-
-
 PlayingScene.prototype = new Scene(); //this inherits from Scene
-
+var gameState = {COUNTDOWN:"countdown",PLAY:"play",NEWLEVEL:"newlevel"}
 function PlayingScene()
 {
 	this.title = "Playing";
@@ -9,112 +7,100 @@ function PlayingScene()
 	this.player = new Player();
 	this.collisionManager = new CollisionManager();
 	this.levelManager = new levelManager();
+	this.spawner = new spawner();
+	this.starterCountdown = new button("",canvas.width/2,canvas.height/2);
+	this.countdownTime = 1;
+	this.timer = 0;
+	this.currentGameState = gameState.COUNTDOWN;
+	this.scoreManager = new scoreManager();
+	
 }
 
-PlayingScene.prototype.Update = function()
+PlayingScene.prototype.Update = function(dt)
 {
-	this.grid.draw();
-	this.grid.showOnGrid(this.player.x+35,this.player.y+35)
-	this.player.update();
-	for (var i = 0; i < this.levelManager.arrayOfWalls.length; i++)
+	if(this.currentGameState === gameState.COUNTDOWN)
 	{
-		if(this.player.rect.intersects(this.levelManager.arrayOfWalls[i].bounds))
+		this.countdownTimer(dt,1000);
+		this.starterCountdown.update();
+		this.starterCountdown.setText(this.countdownTime+"");
+		if(this.countdownTime <= 0)
 		{
+			this.timer = 0;
+			this.countdownTime = 1;
+			this.currentGameState = gameState.PLAY;
+		}
+	}
+	if(this.currentGameState === gameState.PLAY)
+	{
+		this.grid.showOnGrid(this.player.x+35,this.player.y+35)
+		this.player.update();
+		this.spawner.setPlayerCollision(this.player.circle);
+		for (var i = 0; i < this.levelManager.arrayOfLevels[this.levelManager.level-1].length; i++) 
+		{
+			if(this.player.rect.intersects(this.levelManager.arrayOfLevels[this.levelManager.level-1][i].bounds))
+			{
 
-			this.offsetX = this.collisionManager.getHorizontalIntersectionDepth(this.player.rect,this.levelManager.arrayOfWalls[i].bounds);
-			this.offsetY = this.collisionManager.getVirticalIntersectionDepth(this.player.rect,this.levelManager.arrayOfWalls[i].bounds);
+				this.offsetX = this.collisionManager.getHorizontalIntersectionDepth(this.player.rect,this.levelManager.arrayOfLevels[this.levelManager.level-1][i].bounds);
+				this.offsetY = this.collisionManager.getVirticalIntersectionDepth(this.player.rect,this.levelManager.arrayOfLevels[this.levelManager.level-1][i].bounds);
 
-			if (Math.abs(this.offsetX) > Math.abs(this.offsetY))
+				if (Math.abs(this.offsetX) > Math.abs(this.offsetY))
 				{
 					this.player.y += this.offsetY;
 				}
 				else
 				{
-				   	this.player.x += this.offsetX;	
+				 	this.player.x += this.offsetX;	
 				}
+			}
 		}
-	}
-	
-	if(this.player.isMoving)
-	{
-		//this.levelManager.toggle = false;
-	}
-	else
-	{
-		//this.levelManager.toggle = true;
+			
+		this.spawner.update(dt);
+		this.scoreManager.update(dt);
+		this.scoreManager.setHitScore(this.spawner.hitCounter);
+		this.scoreManager.setMissScore(this.spawner.missCounter);
+		this.spawner.manageGameDiff(this.scoreManager.level);
+		this.levelManager.level = this.scoreManager.level;
 	}
 }
 
 PlayingScene.prototype.draw = function()
 {
+
 	this.grid.draw();
-	this.player.draw(canvas);
 	this.levelManager.draw();
+	
+	this.spawner.draw();
+	
+	
+	if(this.currentGameState === gameState.COUNTDOWN)
+	{
+		this.starterCountdown.draw();
+	}
+	else
+	{
+		this.scoreManager.draw();
+	}
+
+	this.player.draw(canvas);
 }
-
-
-PlayingScene.prototype.handelInput = function(event)
-{
-	var key = getCharCode(event);
-	if(key == 68 || key == 39)
-	{
-		this.player.moveRight();
-
-	}
-	if(key == 65 || key == 37)
-	{
-		this.player.moveLeft();
-	}
-	if(key == 87 || key == 38)
-	{
-		this.player.moveUp();
-	}
-	if(key == 83 || key == 40)
-	{
-		this.player.moveDown();
-	}
-
-}
-PlayingScene.prototype.handelReleaseInput = function(event)
-{
-	var key = getCharCode(event);
-	if(key == 68 || key == 39)
-	{
-		this.player.stopRight();
-
-	}
-	if(key == 65 || key == 37)
-	{
-		this.player.stopLeft();
-	}
-	if(key == 87 || key == 38)
-	{
-		this.player.stopUp();
-	}
-	if(key == 83 || key == 40)
-	{
-		this.player.stopDown();
-	}
-
-}
-
 
 PlayingScene.prototype.Start = function()
 {
-	var self = this;
-	window.addEventListener("keydown", function(evt)
-	{
-		self.handelInput(evt)
-	}, false);
-	window.addEventListener("keyup", function(evt)
-	{
-		self.handelReleaseInput(evt)
-	}, false);
 
 }
 
 PlayingScene.prototype.Stop = function()
 {
-	window.removeEventListener("keydown",this.handelInput);
 	ctx.clearRect(0,0,1000,1000);
+}
+
+PlayingScene.prototype.countdownTimer = function(dt,interval)
+{
+	this.timer += dt;
+	if(this.timer > interval)
+	{
+		this.timer = 0;
+		//call function here
+		this.countdownTime--;
+	}
 }

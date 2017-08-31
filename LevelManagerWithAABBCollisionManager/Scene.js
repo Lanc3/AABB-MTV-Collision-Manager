@@ -6,7 +6,7 @@ function Scene()
 
 
 
-Scene.prototype.Update = function()
+Scene.prototype.Update = function(dt)
 {
 	game.ctx.fillText("Current Scene = " + this.title, 600, 300);
 

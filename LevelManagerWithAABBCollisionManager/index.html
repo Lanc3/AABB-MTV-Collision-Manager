@@ -2,17 +2,23 @@
 <html lang="en"> 
 <meta charset="utf-8"> 
 	<head>
+	<link href="https://fonts.googleapis.com/css?family=Black+Ops+One|Press+Start+2P" rel="stylesheet">
 	<title>Derp</title>
 	<style type="text/css"> 
 		body { 
-			background-color:cyan; 
-			margin:0px; 
+			font-family: 'Press Start 2P', cursive;
+			font-family: 'Black Ops One', cursive;
+			background-color:black; 	 
 			overflow : hidden; 
 
 		}
+		@font-face { font-family: gameFont; src: url('myserver.com/fonts/Delicious-Roman.ttf'); } 
 		</style> 
 	</head>
-	<body onload=main()>
+	<canvas id="myCanvas" width="1000" height="1000" style="border:0px solid white">
+	<script src="spawner.js"></script>
+	<script src="particle.js"></script>
+	<script src="inputController.js"></script>
 	<script src="app.js"></script>
 	<script src="SceneManager.js"></script>
 	<script src="Scene.js"></script>
@@ -20,7 +26,6 @@
 	<script src="SceneMenu.js"></script>
 	<script src="PlayingScene.js"></script>
 	<script src="Goal.js"></script>
-	<script src="button.js"></script>
 	<script src="rect.js"></script>
 	<script src="Player.js"></script>
 	<script src="Grid.js"></script>
@@ -31,8 +36,10 @@
 	<script src="AssetLoader.js"></script>
 	<script src="AudioManager.js"></script>
 	<script src="levelManager.js"></script>
-	<canvas id="myCanvas" width="1000" height="1000" style="border:1px solid white;">
-	
+	<script src="button.js"></script>
+	<script src="scoreManager.js"></script>
+	<script src="circle.js"></script>
+	<body onload="main()">
 </canvas> 
 	</body>
 </html>

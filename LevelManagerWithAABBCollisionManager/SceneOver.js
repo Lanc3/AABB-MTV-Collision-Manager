@@ -1,9 +1,8 @@
 SceneOver.prototype = new Scene(); //this inherits from Scene
 
-function SceneOver()
+function SceneOver(inputC)
 {
 	this.title = "Game Over";
-	
 	
 }
 

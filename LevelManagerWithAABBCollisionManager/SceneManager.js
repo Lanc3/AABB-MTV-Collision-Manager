@@ -19,7 +19,8 @@ SceneManager.prototype.AddScene = function(newScene)
 SceneManager.prototype.GoToScene = function(sceneIndex)
 {
 	this.currentScene.Stop();
-	this.currentScene = this.sceneArray[sceneIndex];
+	this.sceneArrayIndex = sceneIndex;
+	this.currentScene = this.sceneArray[this.sceneArrayIndex];
 	this.currentScene.Start();
 }
 

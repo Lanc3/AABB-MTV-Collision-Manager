@@ -1,35 +1,54 @@
 var sceneManager;
 var canvas;
 var ctx;
+var mouseCanvasPositionX,mouseCanvasPositionY;
+var isRightClick = false;
+var inputController;
+var lastUpdate = Date.now();
+var myInterval = setInterval(tick, 0);
+var screenWidth = document.documentElement.clientWidth;
+var screeHeight = document.documentElement.clientHeight;
+
 function main()
 {
 
+	mouseCanvasPositionX = 0;
+	mouseCanvasPositionY = 0;
 	canvas = initCanvas();
+	inputController = new inputController();
 	ctx = canvas.getContext("2d");
-	sceneManager = new SceneManager(canvas);
+	sceneManager = new SceneManager();
 	sceneManager.CurrentScene().Update();
-	document.addEventListener("mousedown", changeScene);
-	update();
-	draw();
+
 }
 
-function update()
+function tick() {
+    var now = Date.now();
+    var dt = now - lastUpdate;
+    lastUpdate = now;
+    if (typeof sceneManager != 'undefined')
+    {
+    	update(dt);
+    	draw();
+	}
+}
+
+function update(dt)
 {
-	sceneManager.currentScene.Update();
-	window.requestAnimationFrame(update);
+	sceneManager.currentScene.Update(dt);
+
 }
 
 function draw()
 {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	sceneManager.currentScene.draw();
-	window.requestAnimationFrame(draw);
 }
 function initCanvas()
 {
 	var c = document.getElementById("myCanvas");
-	c.width = window.innerWidth;
-	c.height = window.innerHeight;
+	c.width = screenWidth;
+	c.height = screeHeight;
 
 	return c;
 }
@@ -44,10 +63,20 @@ function changeScene(e)
 
 	// colour
 	ctx.fillStyle = rgb(r,g,b);
-	sceneManager.GoToNextScene();
+	sceneManager.GoToScene(2);
 	
 }
 
+function click(event)
+{
+	isRightClick = true;
+	console.log(isRightClick)
+}
+
+function log(text)
+{
+	console.log(text);
+}
 function rgb(r, g, b) 
 { 
 	return 'rgb('+clamp(Math.round(r),0,255)+', '+clamp(Math.round(g),0,255)+', '+clamp(Math.round(b),0,255)+')';
@@ -79,4 +108,15 @@ function getCharCode(event)
 	{
 		return event.keyCode; // special key
 	}
+}
+
+function makeStruct(names) {
+  var names = names.split(',');
+  var count = names.length;
+  function constructor() {
+    for (var i = 0; i < count; i++) {
+      this[names[i]] = arguments[i];
+    }
+  }
+  return constructor;
 }

@@ -1,38 +1,49 @@
-function button(name,posx,posy)
+function button(text,posx,posy)
 {
-	this.name = name;
+	this.text = text;
 	this.x = posx;
 	this.y = posy;
+	this.width = 275;
+	this.height = 75;
 	this.size = 75;
-	this.rect = new Rect(this.x,this.y,275,75);
+	this.fontSize = 75;
+	this.rect = new Rect(this.x,this.y,this.width,this.height);
+	this.gradient=ctx.createLinearGradient(0,0,canvas.width,0);
+	this.gradient.addColorStop("0","red");
+	this.gradient.addColorStop("0.5","greenyellow");			
+	this.gradient.addColorStop("1.0","greenyellow");
 }
 
 button.prototype.Init = function()
 {
 	
 }
+button.prototype.update = function()
+{
+	if(this.rect.intersects(new Rect(inputController.mouseCanvasPositionY,inputController.mouseCanvasPositionY,4,4)))
+	{
+		this.gradient.addColorStop("0","greenyellow");
+		this.gradient.addColorStop("0.5","skyblue");			
+		this.gradient.addColorStop("1.0","greenyellow");
+	
+
+	}
+	else
+	{
+		this.gradient.addColorStop("0","red");
+		this.gradient.addColorStop("0.5","greenyellow");			
+		this.gradient.addColorStop("1.0","greenyellow");
+	}
+}
+
+button.prototype.setText = function(text)
+{
+	this.text = text;
+}
 
 button.prototype.draw = function()
 {
-	ctx.font = "40px Verdana"
-	ctx.fillText(this.name,this.x,this.y);
-	ctx.fillStyle = rgb(255,255,0,0) ;
-	ctx.strokeRect(this.x,this.y+this.rect.height/2,this.rect.width,-this.rect.height);
-	
-}
-button.prototype.intersects = function (rect)
-{
-	right = false;
-	left = false;
-	up = false;
-	down = false;
-
-	if (this.x < rect.x + 75 &&
-   		this.x + 75 > rect.x &&
-  		 this.y < rect.y + 75 &&
-  		 75 + this.y > rect.y) 
-	{
-		
-	}
-
+	ctx.fillStyle = this.gradient;
+	ctx.font = this.fontSize+"px Black Ops One"
+	ctx.fillText(this.text,this.x,this.y+this.fontSize);
 }

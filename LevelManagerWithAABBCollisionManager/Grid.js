@@ -113,7 +113,7 @@ Grid.prototype.showOnGrid = function(x,y)
 		{
 			if(j*this.collumnAmmount+i == this.getGridIdFromPosition(x,y))
 			{
-				this.tdArray[i][j].setColor(255,0,0);
+				//this.tdArray[i][j].setColor(255,0,0);
 			}
 			else
 			{

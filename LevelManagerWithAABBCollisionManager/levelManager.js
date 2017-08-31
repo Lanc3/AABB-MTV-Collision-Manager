@@ -3,9 +3,10 @@ function levelManager()
 	this.leveldata;
 	this.loadleveldata("data.json");
 	this.arrayOfWalls = [];
-	this.arrayOfWallsOther = [];
+	this.arrayOfLevels = [];
 	this.toggle = true;
-	
+	this.level = 1;
+	this.levelCap = 5;
 }
 
 levelManager.prototype.loadleveldata = function(filename) 
@@ -31,31 +32,28 @@ levelManager.prototype.loadleveldata = function(filename)
 
 levelManager.prototype.setUpLevel = function()
 {
-	for (var i = 0; i < this.leveldata.levels[0].level1.length; i++) {
-		
-		this.arrayOfWalls.push(new Wall(this.leveldata.levels[0].level1[i][0],this.leveldata.levels[0].level1[i][1],this.leveldata.levels[0].level1[i][2],this.leveldata.levels[0].level1[i][3]));
-	}
-
-	for (var i = 0; i < this.leveldata.levels[1].level2.length; i++) {
-		
-		this.arrayOfWallsOther.push(new Wall(this.leveldata.levels[1].level2[i][0],this.leveldata.levels[1].level2[i][1],this.leveldata.levels[1].level2[i][2],this.leveldata.levels[1].level2[i][3]));
+	for (var l = 0; l < this.leveldata.levels.length; l++) 
+	{
+		for (var i = 0; i < this.leveldata.levels[l].level.length; i++) 
+		{
+			this.arrayOfWalls.push(new Wall(this.leveldata.levels[l].level[i][0],this.leveldata.levels[l].level[i][1],this.leveldata.levels[l].level[i][2],this.leveldata.levels[l].level[i][3]));
+		}
+		this.arrayOfLevels.push(this.arrayOfWalls);
+		this.arrayOfWalls = [];
 	}
 }
 
 levelManager.prototype.draw = function()
 {
-	if(this.toggle)
+	if(this.level >= this.levelCap)
 	{
-		for (var i = 0; i < this.arrayOfWalls.length; i++) 
-		{
-			this.arrayOfWalls[i].draw();
-		}
+		this.level = this.levelCap;
 	}
-	else
+	for (var l = 0; l < this.arrayOfLevels.length; l++) 
 	{
-		for (var i = 0; i < this.arrayOfWallsOther.length; i++) 
+		for (var i = 0; i < this.arrayOfLevels[this.level-1].length; i++) 
 		{
-			this.arrayOfWallsOther[i].draw();
+			this.arrayOfLevels[this.level-1][i].draw();
 		}
 	}
 }
