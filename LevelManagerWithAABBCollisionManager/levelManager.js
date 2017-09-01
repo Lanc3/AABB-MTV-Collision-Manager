@@ -6,7 +6,7 @@ function levelManager()
 	this.arrayOfLevels = [];
 	this.toggle = true;
 	this.level = 1;
-	this.levelCap = 5;
+	this.levelCap = 7;
 }
 
 levelManager.prototype.loadleveldata = function(filename) 

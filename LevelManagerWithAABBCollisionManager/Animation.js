@@ -71,7 +71,6 @@ Animation.prototype.draw = function()
 		ctx.save();
 	    ctx.translate(this.x, this.y);
 	    ctx.rotate(this.rotation * Math.PI / 180);
-	    log(this.animationList.animationRectList)
 	    if(this.isVisible)
 	    {
 	    	ctx.drawImage(this.image, this.animationList.animationRectList[this.animationIndex].x,
@@ -80,7 +79,7 @@ Animation.prototype.draw = function()
 						this.animationList.animationRectList[this.animationIndex].height,
 						-this.animationList.animationRectList[this.animationIndex].width / 2, -this.animationList.animationRectList[this.animationIndex].height / 2,
 						this.animationList.animationRectList[this.animationIndex].width * this.scale,
-						this.animationList.animationRectList[this.animationIndex].width * this.scale);
+						this.animationList.animationRectList[this.animationIndex].height * this.scale);
 		}
 		ctx.restore();
 	}

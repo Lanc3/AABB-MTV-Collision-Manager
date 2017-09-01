@@ -57,7 +57,7 @@ PlayingScene.prototype.Update = function(dt)
 		this.spawner.update(dt);
 		this.scoreManager.update(dt);
 		this.scoreManager.setHitScore(this.spawner.hitCounter);
-		this.scoreManager.setMissScore(this.spawner.missCounter);
+		this.scoreManager.setMissScore(this.spawner.missCounter * this.scoreManager.level);
 		this.spawner.manageGameDiff(this.scoreManager.level);
 		this.levelManager.level = this.scoreManager.level;
 	}
@@ -67,6 +67,7 @@ PlayingScene.prototype.draw = function()
 {
 
 	this.grid.draw();
+	ctx.clearRect(0,0,10000,10000);
 	this.levelManager.draw();
 	
 	
@@ -86,7 +87,7 @@ PlayingScene.prototype.draw = function()
 
 PlayingScene.prototype.Start = function()
 {
-
+	audioManager.playSound("music",true);
 }
 
 PlayingScene.prototype.Stop = function()

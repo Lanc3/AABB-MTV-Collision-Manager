@@ -9,9 +9,12 @@ var myInterval = setInterval(tick, 0);
 var screenWidth = document.documentElement.clientWidth;
 var screeHeight = document.documentElement.clientHeight;
 var assetManager;
+var audioManager;
+var isAudioManagerReady = false;
 function main()
 {
 	assetManager = new AssetManager();
+	audioManager = new AudioManager(setAudioManagerState());
 	mouseCanvasPositionX = 0;
 	mouseCanvasPositionY = 0;
 	canvas = initCanvas();
@@ -20,14 +23,12 @@ function main()
 	sceneManager = new SceneManager();
 	sceneManager.CurrentScene().Update();
 	
-
-	loadAssets();
 }
-function loadAssets()
+function setAudioManagerState()
 {
-	
-	
+	isAudioManagerReady = true;
 }
+
 function tick() {
     var now = Date.now();
     var dt = now - lastUpdate;

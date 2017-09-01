@@ -12,11 +12,11 @@ SceneOver.prototype.Update = function()
 	ctx.fillText("Game Over",canvas.width/2-200,canvas.height/2);
 }
 
-Scene.prototype.Start = function()
+SceneOver.prototype.Start = function()
 {
 	//window.addEventListener("keydown",game.handelInput);
 }
-Scene.prototype.Stop = function()
+SceneOver.prototype.Stop = function()
 {
 	//window.removeEventListener("keydown",game.handelInput);
 	ctx.clearRect(0,0,1000,1000);

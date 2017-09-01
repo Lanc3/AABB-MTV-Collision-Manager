@@ -18,10 +18,11 @@ circle.prototype.setPosition = function(x,y)
 
 circle.prototype.draw = function()
 {
-	ctx.fillStyle = this.color;
-	ctx.beginPath();
-	ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-	ctx.fill();
+	ctx.drawImage(assetManager.getAsset("circle").image,
+		this.x-this.radius/2,
+		this.y-this.radius/2,
+		this.radius,
+		this.radius);
 }
 
 circle.prototype.intersects = function(circle)

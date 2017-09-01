@@ -2,46 +2,44 @@
 
 function AudioManager(onReady)
 {
-  var eventType = "touchend";
-  ("ontouchstart" in window) ? eventType = "touchend" : eventType = "click";
-  var callback = onReady;
+  
+  this.callback = onReady;
 
   //an object to hold a name for each sound and its associated buffer (memory holding the sound)
   this.audioBuffers={}
-  var downloadCallback;
+  this.downloadCallback;
 
   //It is setup in unlock()
-  var audioContext;
-  var that = this;
+  this.audioContext;
+  this.self = this;
 
-  var queue = [];
+  this.queue = [];
+  this.unlock();
+}
 
 
-  this.init = function()
-  {
-    window.addEventListener(eventType, this.unlock);
-  }
 
-  this.playSound = function(name, looping) {
+AudioManager.prototype.playSound = function(name, looping)
+{
 
-    if(that.audioBuffers[name] === undefined)
+    if(this.audioBuffers[name] === undefined)
     {
-      console.log(that.audioBuffers)
+      console.log(this.audioBuffers)
       console.log("Sound doesn't exist or hasn't been loaded")
       return;
     }
 
     //retrieve the buffer we stored earlier
-    var audioBuffer = that.audioBuffers[name];
+    var audioBuffer = this.audioBuffers[name];
 
     //create a buffer source - used to play once and then a new one must be made
 
-    var source = audioContext.createBufferSource();
+    var source = this.audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.loop = false;
-    source.connect(audioContext.destination);
+    source.connect(this.audioContext.destination);
     source.start ? source.start(0) : source.noteOn(0); // Play immediately.
-
+    var that = this;
     if (looping)
     {
       source.onended = function()
@@ -52,144 +50,143 @@ function AudioManager(onReady)
 
   }
 
-  this.addSoundToQueue = function(name, url)
+AudioManager.prototype.queueDownload = function(name, url)
+{
+  this.queue.push({name:name, url:url});
+}
+
+AudioManager.prototype.downloadAll = function(argDownloadCallback)
+{
+  this.downloadCallback = argDownloadCallback;
+  for (var i = 0; i < this.queue.length; i++)
   {
-    queue.push({name:name, url:url});
+    this.loadSoundFile(this.queue[i].name, this.queue[i].url);
   }
+}
 
-  this.downloadQueue = function(argDownloadCallback)
+
+AudioManager.prototype.loadSoundFile = function(name, url)
+{
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'arraybuffer';
+  var that = this;
+  xhr.onload = function(e)
   {
-    downloadCallback = argDownloadCallback;
-    for (var i = 0; i < queue.length; i++)
-    {
-      this.loadSoundFile(queue[i].name, queue[i].url);
-    }
-  }
-
-
-  this.loadSoundFile = function(name, url)
-  {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'arraybuffer';
-    var that = this;
-    xhr.onload = function(e)
-    {
 
         //buffer containing sound returned by xhr
-        var arrayBuffer=this.response;
+      var arrayBuffer=this.response;
 
-        decode({buf:arrayBuffer}, name);
+      that.decode({buf:arrayBuffer}, name);
 
-    };
+  };
 
-    //send the xhr request to download the sound file
-    xhr.send();
-  }
+  //send the xhr request to download the sound file
+  xhr.send();
+}
 
-  this.soundLoaded = function(name)
+AudioManager.prototype.soundLoaded = function(name)
+{
+	
+  for (var i = 0; i < this.queue.length; i++)
   {
-  	console.log(name)
-    for (var i = 0; i < queue.length; i++)
+    if (name == this.queue[i].name)
     {
-      if (name == queue[i].name)
-      {
-        queue.splice(i, 1);
-      }
-    }
-
-    console.log(name, queue.length)
-    if (queue.length == 0)
-    {
-      downloadCallback();
+      this.queue.splice(i, 1);
     }
   }
 
-  function syncStream(node)
-  { // should be done by api itself. and hopefully will.
+ 
+  if (this.queue.length == 0)
+  {
+    this.downloadCallback;
+  }
+}
 
-      var buf8 = new Uint8Array(node.buf);
-      buf8.indexOf = Array.prototype.indexOf;
-      var i=node.sync, b=buf8;
-      while(1) {
-          node.retry++;
-          i=b.indexOf(0xFF,i); if(i==-1 || (b[i+1] & 0xE0 == 0xE0 )) break;
-          i++;
-      }
-      if(i!=-1) {
-          var tmp=node.buf.slice(i); //carefull there it returns copy
-          delete(node.buf); node.buf=null;
-          node.buf=tmp;
-          node.sync=i;
-          return true;
-      }
-      return false;
+
+AudioManager.prototype.unlock = function()
+{
+  try
+  {
+    // Fix up for prefixing
+    var AudioContext = window.AudioContext||window.webkitAudioContext;
+    this.audioContext = new AudioContext();
+   
+  }
+  catch(e)
+  {
+    alert('Web Audio API is not supported in this browser');
   }
 
-  function decode(node, name)
+  // create empty buffer
+  var buffer = this.audioContext.createBuffer(1, 1, 22050);
+  var source = this.audioContext.createBufferSource();
+  source.buffer = buffer;
+
+  // connect to output (your speakers)
+  source.connect(this.audioContext.destination);
+
+  source.onended = function()
   {
-      try
-      {
-          audioContext.decodeAudioData(node.buf,
-          function(decoded){
-
-              node.source  = audioContext.createBufferSource();
-              node.source.connect(audioContext.destination);
-              that.audioBuffers[name] = decoded;
-              that.soundLoaded(name);
-
-
-          },
-          function()
-          { // only on error attempt to sync on frame boundary
-              console.log("err")
-              if(syncStream(node)) decode(node, name);
-          });
-
-
-      }
-      catch(e)
-      {
-          console.log('decode exception',e.message);
-      }
-
-
+    this.callback;
   }
 
-  this.unlock = function()
-  {
-    console.log("unlock")
+  // play the file
+  source.start ? source.start(0) : source.noteOn(0);
+}
+
+function syncStream(node)
+{ // should be done by api itself. and hopefully will.
+
+    var buf8 = new Uint8Array(node.buf);
+    buf8.indexOf = Array.prototype.indexOf;
+    var i=node.sync, b=buf8;
+    while(1) {
+        node.retry++;
+        i=b.indexOf(0xFF,i); if(i==-1 || (b[i+1] & 0xE0 == 0xE0 )) break;
+        i++;
+    }
+    if(i!=-1) {
+        var tmp=node.buf.slice(i); //carefull there it returns copy
+        delete(node.buf); node.buf=null;
+        node.buf=tmp;
+        node.sync=i;
+        return true;
+    }
+    return false;
+}
+
+AudioManager.prototype.decode = function(node, name)
+{
+  var that = this;
     try
     {
-      // Fix up for prefixing
-      var AudioContext = window.AudioContext||window.webkitAudioContext;
-      audioContext = new AudioContext();
+        this.audioContext.decodeAudioData(node.buf,
+        function(decoded){
+
+            node.source  = that.audioContext.createBufferSource();
+            node.source.connect(that.audioContext.destination);
+            that.audioBuffers[name] = decoded;
+            that.soundLoaded(name);
+
+
+        },
+        function()
+        { // only on error attempt to sync on frame boundary
+            console.log("err")
+            if(syncStream(node)) decode(node, name);
+        });
+
+
     }
     catch(e)
     {
-      alert('Web Audio API is not supported in this browser');
+        console.log('decode exception',e.message);
     }
 
-    // create empty buffer
-    var buffer = audioContext.createBuffer(1, 1, 22050);
-    var source = audioContext.createBufferSource();
-    source.buffer = buffer;
-
-    // connect to output (your speakers)
-    source.connect(audioContext.destination);
-
-    source.onended = function()
-    {
-      callback();
-    }
-
-    // play the file
-    source.start ? source.start(0) : source.noteOn(0);
-
-    window.removeEventListener(eventType, that.unlock);
-  }
 
 }
+
 
 
 

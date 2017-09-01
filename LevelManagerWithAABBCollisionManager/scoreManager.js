@@ -8,14 +8,14 @@ function scoreManager()
 	this.timer = 0;
 	this.levelTime = 0;
 	this.currentLevel = levelState.LEVELONE;
-	this.scoreText = new button("",canvas.width/3,canvas.height/4);
-	this.missText = new button("",canvas.width/3,canvas.height/3);
-	this.scoreText.setText(this.score+" : hit!");
-	this.missText.setText(this.miss+" : miss!");
+	this.scoreText = new button("",10,canvas.height*0.95);
+	this.missText = new button("",10,canvas.height*0.85);
+	this.scoreText.setText(this.score+" : score");
+	this.missText.setText(this.miss+" : miss(x"+this.level+")");
 	this.timeText = new button("",canvas.width/3,canvas.height/2);
-	this.levelText = new button("",canvas.width/3,canvas.height*0.75);
-	this.timeText.setText(this.score+" : time!");
-	this.levelText.setText(this.miss+" : level!");
+	this.levelText = new button("",10,10);
+	this.timeText.setText(this.score+" : Next");
+	this.levelText.setText(this.miss+" : level");
 }
 
 scoreManager.prototype.update = function(dt)
@@ -26,8 +26,12 @@ scoreManager.prototype.update = function(dt)
 		this.levelTime = 0;
 		this.level++;
 	}
-	this.timeText.setText((30 - this.levelTime)+" : time!");
-	this.levelText.setText(this.level+" : level!");
+	this.timeText.setText((30 - this.levelTime)+" : Next");
+	this.levelText.setText(this.level+" : level");
+	if(this.miss > this.score)
+	{
+		sceneManager.GoToNextScene();
+	}
 }
 
 scoreManager.prototype.draw = function()
@@ -41,13 +45,13 @@ scoreManager.prototype.draw = function()
 scoreManager.prototype.setMissScore = function(missScore)
 {
 	this.miss = missScore;
-	this.missText.setText(this.miss+" : miss!");
+	this.missText.setText(this.miss+" : miss(x"+this.level+")");
 }
 
 scoreManager.prototype.setHitScore = function(hitScore)
 {
 	this.score = hitScore;
-	this.scoreText.setText(this.score+" : hit!");
+	this.scoreText.setText(this.score+" : score");
 }
 scoreManager.prototype.gameTimer = function(dt,interval)
 {
