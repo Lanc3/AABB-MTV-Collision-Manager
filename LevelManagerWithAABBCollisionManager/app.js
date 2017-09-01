@@ -11,6 +11,7 @@ var screeHeight = document.documentElement.clientHeight;
 var assetManager;
 var audioManager;
 var isAudioManagerReady = false;
+var finalScore = 0;
 function main()
 {
 	assetManager = new AssetManager();

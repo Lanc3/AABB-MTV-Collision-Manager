@@ -3,21 +3,35 @@ SceneOver.prototype = new Scene(); //this inherits from Scene
 function SceneOver(inputC)
 {
 	this.title = "Game Over";
-	
+	this.continueButton = new button("Press to restart",canvas.width/6.3,canvas.height*0.75)
+	this.ScoreButton = new button("Score : "+finalScore,canvas.width/6.3,canvas.height*0.15)
 }
 
 SceneOver.prototype.Update = function()
 {
-	ctx.font = "140px Verdana"
-	ctx.fillText("Game Over",canvas.width/2-200,canvas.height/2);
+	this.continueButton.update();
+	this.ScoreButton.update();
+	this.ScoreButton.setText("Score : "+finalScore);
+	if(this.continueButton.rect.intersects(new Rect(inputController.mouseCanvasPositionX,inputController.mouseCanvasPositionY,4,4)))
+    {
+    	if(inputController.touching)
+    	{
+    		sceneManager.GoToNextScene();
+    	}
+    }
+}
+SceneOver.prototype.draw = function()
+{
+	this.continueButton.draw();
+	this.ScoreButton.draw();
 }
 
 SceneOver.prototype.Start = function()
 {
-	//window.addEventListener("keydown",game.handelInput);
+	
 }
 SceneOver.prototype.Stop = function()
 {
-	//window.removeEventListener("keydown",game.handelInput);
+	
 	ctx.clearRect(0,0,1000,1000);
 }

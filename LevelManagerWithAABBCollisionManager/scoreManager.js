@@ -30,6 +30,7 @@ scoreManager.prototype.update = function(dt)
 	this.levelText.setText(this.level+" : level");
 	if(this.miss > this.score)
 	{
+		finalScore = this.score;
 		sceneManager.GoToNextScene();
 	}
 }

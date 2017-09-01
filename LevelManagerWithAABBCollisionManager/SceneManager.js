@@ -33,6 +33,7 @@ SceneManager.prototype.GoToNextScene = function()
 	if (this.sceneArrayIndex == this.sceneArray.length) 
 	{
 		this.sceneArrayIndex = 0;
+		this.sceneArray[2] = new PlayingScene();
 	}
 	this.currentScene = this.sceneArray[this.sceneArrayIndex];
 	this.currentScene.Start();
