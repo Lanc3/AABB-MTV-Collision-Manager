@@ -69,7 +69,7 @@ PlayingScene.prototype.draw = function()
 	this.grid.draw();
 	this.levelManager.draw();
 	
-	this.spawner.draw();
+	
 	
 	
 	if(this.currentGameState === gameState.COUNTDOWN)
@@ -80,7 +80,7 @@ PlayingScene.prototype.draw = function()
 	{
 		this.scoreManager.draw();
 	}
-
+    this.spawner.draw();
 	this.player.draw(canvas);
 }
 

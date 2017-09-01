@@ -8,10 +8,10 @@ var lastUpdate = Date.now();
 var myInterval = setInterval(tick, 0);
 var screenWidth = document.documentElement.clientWidth;
 var screeHeight = document.documentElement.clientHeight;
-
+var assetManager;
 function main()
 {
-
+	assetManager = new AssetManager();
 	mouseCanvasPositionX = 0;
 	mouseCanvasPositionY = 0;
 	canvas = initCanvas();
@@ -19,9 +19,15 @@ function main()
 	ctx = canvas.getContext("2d");
 	sceneManager = new SceneManager();
 	sceneManager.CurrentScene().Update();
+	
 
+	loadAssets();
 }
-
+function loadAssets()
+{
+	
+	
+}
 function tick() {
     var now = Date.now();
     var dt = now - lastUpdate;

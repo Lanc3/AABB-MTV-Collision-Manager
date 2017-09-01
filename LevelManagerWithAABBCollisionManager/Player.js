@@ -14,6 +14,7 @@ function Player()
 	this.yVelocity = 0;
 	this.snapDistance = 7;
 	this.circle = new circle(this.x,this.y,this.size,rgb(0,255,0));
+	this.animation = new Animation("player",30);
 }
 
 Player.prototype.Init = function()
@@ -44,12 +45,13 @@ Player.prototype.update = function()
 	//visuals
 	this.rect.x = this.x - this.size/2;
 	this.rect.y = this.y - this.size/2;
+	this.animation.setPosition(this.x,this.y);
 }
 
 Player.prototype.draw = function()
 {
 	this.circle.draw();
-
+	this.animation.draw();
 	if(this.y <= 0)
 	{
 		this.y = 0;

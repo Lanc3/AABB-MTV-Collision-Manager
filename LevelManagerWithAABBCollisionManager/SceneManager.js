@@ -2,9 +2,10 @@
 function SceneManager()
 {
 	this.sceneOver = new SceneOver();
+	this.sceneLoading = new loadingScreen();
 	this.sceneMenu = new SceneMenu();
 	this.scenePlaying = new PlayingScene();
-	this.sceneArray = [  this.sceneMenu, this.scenePlaying, this.sceneOver]
+	this.sceneArray = [this.sceneLoading, this.sceneMenu, this.scenePlaying, this.sceneOver]
 	this.sceneArrayIndex = 0;
 	this.currentScene = this.sceneArray[this.sceneArrayIndex];
 }
